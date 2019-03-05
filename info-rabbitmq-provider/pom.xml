@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.info.rabbitmq</groupId>
-    <artifactId>info-rabbitmq</artifactId>
+    <artifactId>info-rabbitmq-provider</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <name>info-rabbitmq</name>
