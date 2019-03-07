@@ -1,14 +1,20 @@
 package com.info.rabbitmq;
 
 import com.info.mq.entity.User;
+import com.info.mq.util.DateUtil;
 import com.info.rabbitmq.provider.*;
 import org.apache.http.client.utils.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sound.midi.Soundbank;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +47,12 @@ public class RabbitmqTest {
 
     @Autowired
     private DelayedSender delayedSender;
+
+    @Autowired
+    private AnnotationSender annotationSender;
+
+    @Autowired
+    private AckAnnotationSender ackAnnotationSender;
 
     @Test
     public void testDirectMsg() {
@@ -126,4 +138,42 @@ public class RabbitmqTest {
         String msg = "延迟发送测试";
         delayedSender.sendDelayed(msg,50000);
     }
+
+    @Test
+    public void test_annotation() throws InterruptedException {
+        int flag = 0;
+        while (true){
+            flag ++  ;
+            Thread.sleep(5000);
+            annotationSender.sendAnnotationMsg("hello world rabbitmq ......"+ flag);
+        }
+    }
+
+
+    @Test
+    public void test_ack(){
+        ackAnnotationSender.sendAckMessage("hello world ack ...." );
+
+    }
+
+    @Test
+    public  void test_ack2(){
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("number", "12345");
+        properties.put("send_time", DateUtil.getParaseDate(new Date(),"yyyy-MM-dd HH:mm:ss"));
+        ackAnnotationSender.sendMessageAck("hello world ack ... ",properties);
+    }
+
+    public static void main(String[] args) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("number", "12345");
+        properties.put("send_time", "2016-02-23");
+        MessageHeaders mhs = new MessageHeaders(properties);
+        System.out.println("格式化map:" + mhs);
+        Message msg = MessageBuilder.createMessage("ces", mhs);
+        System.out.println("新增msg:" + msg);
+        CorrelationData correlationData = new CorrelationData("1234567890");
+        System.out.println(correlationData.toString());
+    }
+
 }
