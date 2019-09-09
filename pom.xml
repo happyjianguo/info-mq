@@ -10,8 +10,10 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>info-mq-entity</module>
         <module>info-rabbitmq-provider</module>
         <module>info-rabbitmq-consumer</module>
+        <module>info-rocketmq-producer</module>
     </modules>
 
     <properties>
@@ -27,6 +29,7 @@
     </parent>
 
 
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -34,6 +37,13 @@
             <artifactId>lombok</artifactId>
             <version>1.18.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+
     </dependencies>
 
 

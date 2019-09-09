@@ -120,3 +120,19 @@ window 搭建 rabbitMQ 集群
 https://blog.csdn.net/inaxen/article/details/76607107   
 https://blog.csdn.net/niketwo/article/details/79078680
 https://blog.csdn.net/u010887744/article/details/78377634  
+
+
+-----------------------  rocketmq   ---------------------
+
+https://www.cnblogs.com/linjiqin/p/9553663.html win安装启动 
+cd F:\Workspaces\workSoft\MQ\rocketmq-all-4.5.2-bin-release\bin  
+
+1.start mqnamesrv.cmd  启动NAMESERVER 
+2.start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true  启动BROKER
+
+cd F:\Workspaces\workSoft\MQ\rocketmq-externals\rocketmq-console
+
+启动控制台
+java -jar rocketmq-console-ng-1.0.1.jar  
+
+http://localhost:8088/ 
