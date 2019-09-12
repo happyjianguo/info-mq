@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 /**
  * @author xxy
  * @ClassName RocketProducerTransaction
- * @Description todo
+ * @Description todo  事务消息
  * @Date 2019/9/5 16:13
  **/
 public class RocketProducerTransaction {
@@ -22,9 +22,11 @@ public class RocketProducerTransaction {
     public static void main(String[] args) throws Exception{
         TransactionListener transactionListener = new TransactionListenerImpl();
 
-        TransactionMQProducer transactionMQProducer = new TransactionMQProducer("info-transaction-producer2");
+        TransactionMQProducer transactionMQProducer = new TransactionMQProducer("info-transaction-producer-09-10");
 
         transactionMQProducer.setNamesrvAddr("127.0.0.1:9876");
+
+        transactionMQProducer.setRetryTimesWhenSendFailed(3);//如果该条消息在1S内没有发送成功，那么重试3次
 
         ExecutorService executorService = new ThreadPoolExecutor(2, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(2000), new ThreadFactory() {
             @Override
@@ -36,26 +38,17 @@ public class RocketProducerTransaction {
         });
 
         transactionMQProducer.setExecutorService(executorService);
+
         transactionMQProducer.setTransactionListener(transactionListener);
+
         transactionMQProducer.start();
 
-
-        for(int i = 0 ;i<10 ;i++){
-            Message message = new Message(
-                    "info-transaction",
-                    "info-tag"+i,
-                    "info-transaction-100"+i,
-                    ("hello-info-first-rocketmq"+i).getBytes(RemotingHelper.DEFAULT_CHARSET));
-            TransactionSendResult transactionSendResult = transactionMQProducer.sendMessageInTransaction(message, "info-transaction-hello");
-            System.out.println(transactionSendResult.toString());
-            Thread.sleep(10);
-        }
-
-        // 保持会儿 对于UNKNOW的消息需要在1分钟后回调
-        //Thread.sleep(1000 * 60 * 60 );
-        for (int i = 0; i < 100000; i++) {
-            Thread.sleep(1000);
-        }
+        Message message = new Message(
+                "info-transaction-09-10",
+                "info-tag-09-10",
+                "info-transaction--09-10",
+                ("hello-info-first-rocketmq-09-10").getBytes(RemotingHelper.DEFAULT_CHARSET));
+        transactionMQProducer.sendMessageInTransaction(message, "info-transaction");
         transactionMQProducer.shutdown();
     }
 

@@ -1,5 +1,6 @@
 package info.rocket.mq.consumer;
 
+import com.info.mq.util.DateUtil;
 import org.apache.rocketmq.client.producer.LocalTransactionState;
 import org.apache.rocketmq.client.producer.TransactionListener;
 import org.apache.rocketmq.common.message.Message;
@@ -8,6 +9,7 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,7 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class TransactionListenerImpl implements TransactionListener {
 
-    private AtomicInteger transactionIndex = new AtomicInteger(0);
+
+
     private ConcurrentHashMap<String, Integer> localTrans = new ConcurrentHashMap<>();
 
 
@@ -33,15 +36,15 @@ public class TransactionListenerImpl implements TransactionListener {
      **/
     @Override
     public LocalTransactionState executeLocalTransaction(Message message, Object o) {
-        /*String transactionId = message.getTransactionId();
+        String transactionId = message.getTransactionId();
         // 0 执行中 1 本地事务执行成功 2 本地事务执行失败
         localTrans.put(transactionId,0);
         // 业务执行 处理本地事务 service
         System.out.println("执行本地事务。。。。start ==="  + transactionId);
         try {
-            System.out.println("正在执行本地事务。。。。process===" + transactionId);
-            Thread.sleep(1000);
-            System.out.println("正在执行本地事务。。。。success===" + transactionId);
+            System.out.println(DateUtil.getParaseDate(new Date(),"yyyy-MM-dd HH:ss:mm") +"正在执行本地事务。。。。process===" + transactionId);
+            Thread.sleep(1000*60+1000);
+            System.out.println(DateUtil.getParaseDate(new Date(),"yyyy-MM-dd HH:ss:mm") + "正在执行本地事务。。。。success===" + transactionId);
             localTrans.put(transactionId,1);
         } catch (InterruptedException e) {
             System.out.println("执行本地事务失败。。。。fail===" + transactionId);
@@ -50,13 +53,10 @@ public class TransactionListenerImpl implements TransactionListener {
             return LocalTransactionState.ROLLBACK_MESSAGE;
         }
         System.out.println("执行本地事务。。。。end===" + transactionId);
-        return LocalTransactionState.COMMIT_MESSAGE;*/
+        return LocalTransactionState.COMMIT_MESSAGE;
 
 
-        int value = transactionIndex.getAndIncrement();
-        int status = value % 3;
-        localTrans.put(message.getTransactionId(), status);
-        return LocalTransactionState.UNKNOW;
+
     }
 
     /**
@@ -71,14 +71,7 @@ public class TransactionListenerImpl implements TransactionListener {
      **/
     @Override
     public LocalTransactionState checkLocalTransaction(MessageExt messageExt) {
-        byte[] body = messageExt.getBody();
-        String topic = messageExt.getTopic();
-        String tags = messageExt.getTags();
-        try {
-            System.out.println("接收到的消息abc：主题11："+topic+"，tag11:"+tags+",消息body11："+new String(body, RemotingHelper.DEFAULT_CHARSET));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        System.out.println("checkLocalTransaction:"+DateUtil.getParaseDate(new Date(),"yyyy-MM-dd HH:ss:mm"));
         String transactionId = messageExt.getTransactionId();
         System.out.println("校验本地事务start。。。" + transactionId);
         //获取对应事务ID的状态
@@ -101,5 +94,18 @@ public class TransactionListenerImpl implements TransactionListener {
         }
         System.out.println("校验本地事务end。。。"+LocalTransactionState.COMMIT_MESSAGE + "---------"+ transactionId);
         return LocalTransactionState.COMMIT_MESSAGE;
+    }
+
+
+    public static void main(String[] args) {
+        String string = "abc";
+        switch (string){
+            case "abc":
+                System.out.println("aa"+string);
+                break;
+            case "def":
+                System.out.println("dd"+string);
+                break;
+        }
     }
 }

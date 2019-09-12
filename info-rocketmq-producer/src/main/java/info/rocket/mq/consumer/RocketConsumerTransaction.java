@@ -17,15 +17,15 @@ import java.util.List;
 /**
  * @author xxy
  * @ClassName RocketConsumerTransaction
- * @Description todo
+ * @Description todo  事务消息
  * @Date 2019/9/5 16:14
  **/
 // https://www.jianshu.com/p/c4a3064152ae
 public class RocketConsumerTransaction {
     public static void main(String[] args) throws Exception {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("info-transaction-consumer");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("info-transaction-consumer-09-10");
         consumer.setNamesrvAddr("127.0.0.1:9876");
-        consumer.subscribe("info-transaction2", "*");
+        consumer.subscribe("info-transaction-09-10", "*");
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
@@ -34,8 +34,7 @@ public class RocketConsumerTransaction {
                     String tags = messageExt.getTags();
                     byte[] body = messageExt.getBody();
                     try {
-                        System.out.println(DateUtil.getParaseDate(new Date(),"yyyy-MM-dd 24HH:ss:mm") +"Receive message[msgId=" + messageExt.getMsgId() + "] "
-                                + (System.currentTimeMillis() - messageExt.getStoreTimestamp()) + "ms later");
+                        System.out.println("接收消息的时间："+DateUtil.getParaseDate(new Date(),"yyyy-MM-dd HH:ss:mm"));
                         System.out.println("接收到的消息：主题："+topic+"，tag:"+tags+",消息body："+new String(body, RemotingHelper.DEFAULT_CHARSET));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -47,5 +46,9 @@ public class RocketConsumerTransaction {
         consumer.start();
         System.out.println("start success");
     }
+
+
+
+
 
 }

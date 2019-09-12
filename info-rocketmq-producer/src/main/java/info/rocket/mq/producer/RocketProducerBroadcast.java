@@ -9,7 +9,7 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 /**
  * @author xxy
  * @ClassName RocketProducerBroadcast
- * @Description todo
+ * @Description todo  广播消息
  * @Date 2019/9/6 11:35
  **/
 public class RocketProducerBroadcast {
@@ -24,7 +24,6 @@ public class RocketProducerBroadcast {
                     "info-tag",
                     "info-broad1001",
                     "hello-info-broad-rocketmq".getBytes(RemotingHelper.DEFAULT_CHARSET));
-            //message.setDelayTimeLevel(3);//延迟发送
             SendResult sendResult = producer.send(message);
             System.out.println(sendResult.toString());
         }

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author xxy
  * @ClassName RocketConsumer
- * @Description todo
+ * @Description todo  普通消息，延迟消息
  * @Date 2019/9/5 16:14
  **/
 public class RocketConsumer {

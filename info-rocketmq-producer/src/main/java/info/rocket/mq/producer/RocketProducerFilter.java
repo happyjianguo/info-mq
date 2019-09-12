@@ -13,22 +13,22 @@ import java.io.UnsupportedEncodingException;
 /**
  * @author xxy
  * @ClassName RocketProducer
- * @Description todo  普通消息，延迟消息
+ * @Description todo  过滤消息
  * @Date 2019/9/5 16:13
  **/
-public class RocketProducer {
+public class RocketProducerFilter {
 
-    public static void main(String[] args) throws MQClientException, UnsupportedEncodingException, RemotingException, InterruptedException, MQBrokerException {
-        DefaultMQProducer producer = new  DefaultMQProducer("info-first-rocketmq-producer");
+    public static void main(String[] args) throws Exception{
+        DefaultMQProducer producer = new  DefaultMQProducer("info-filter-producer");
         producer.setNamesrvAddr("127.0.0.1:9876");
         producer.start();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             Message message = new Message(
-                    "info-topic-second",
+                    "info-filter",
                     "info-tag",
-                    "info1001",
-                    "hello-info-first-rocketmq".getBytes(RemotingHelper.DEFAULT_CHARSET));
-            message.setDelayTimeLevel(3);
+                    "info",
+                    ("hello-info-filter"+i).getBytes(RemotingHelper.DEFAULT_CHARSET));
+            message.putUserProperty("i",String.valueOf(i));
             SendResult sendResult = producer.send(message);
             System.out.println(sendResult.toString());
         }
